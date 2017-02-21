@@ -28,8 +28,8 @@ int main(int argc,char* argv[])
 	
 	// Misc
 	
-	Box& box = settings["Input"];
-	Pair& pair = box["Forward"];
+	wss::Box& box = settings["Input"];
+	wss::Pair& pair = box["Forward"];
 	
 	pair = "W";
 	
