@@ -60,8 +60,16 @@ namespace wss
 
 		inline Pair& operator=(const char* str);
 		inline Pair& operator=(const std::string& str);
+		inline Pair& operator=(const int32_t& val);
+		inline Pair& operator=(const uint32_t& val);
+		inline Pair& operator=(const float& val);
+		inline Pair& operator=(const bool& val);
 
 		inline operator const char*() const;
+		inline operator int32_t() const;
+		inline operator uint32_t() const;
+		inline operator float() const;
+		inline operator bool() const;
 
 		inline Pair& operator=(const Pair& o);
 	};
@@ -108,9 +116,73 @@ namespace wss
 
 	//
 
+	Pair& Pair::operator=(const int32_t& val)
+	{
+		m_value = std::to_string(val);
+
+		return *this;
+	}
+
+	//
+
+	Pair& Pair::operator=(const uint32_t& val)
+	{
+		m_value = std::to_string(val);
+
+		return *this;
+	}
+
+	//
+
+	Pair& Pair::operator=(const float& val)
+	{
+		m_value = std::to_string(val);
+
+		return *this;
+	}
+
+	//
+
+	Pair& Pair::operator=(const bool& val)
+	{
+		m_value = (val ? "1": "0");
+
+		return *this;
+	}
+
+	//
+
 	Pair::operator const char*() const
 	{
 		return m_value.c_str();
+	}
+
+	//
+
+	Pair::operator int32_t() const
+	{
+		return static_cast<int32_t>(std::atol(m_value.c_str()));
+	}
+
+	//
+
+	Pair::operator uint32_t() const
+	{
+		return static_cast<uint32_t>(std::atol(m_value.c_str()));
+	}
+
+	//
+
+	Pair::operator float() const
+	{
+		return static_cast<float>(std::atof(m_value.c_str()));
+	}
+
+	//
+
+	Pair::operator bool() const
+	{
+		return (m_value[0] == '1');
 	}
 
 	//
@@ -288,7 +360,7 @@ namespace wss
 			{
 				const Pair& pair = box.m_pairs[j];
 
-				out << pair.GetName() << " " << pair << "\n";
+				out << pair.GetName() << " " << static_cast<const char*>(pair) << "\n";
 			}
 		}
 	}
