@@ -54,6 +54,7 @@ namespace wss
 		WSC_PUBLIC
 
 		inline Pair(const char* name);
+		inline Pair(const char* name, const char* val);
 		inline Pair(const Pair& o);
 
 		inline const char* GetName() const;
@@ -79,6 +80,14 @@ namespace wss
 	Pair::Pair(const char* name)
 	{
 		m_name = name;
+	}
+
+	//
+
+	Pair::Pair(const char* name, const char* val)
+	{
+		m_name = name;
+		m_value = val;
 	}
 
 	//
@@ -216,7 +225,16 @@ namespace wss
 		inline Pair& operator[](const char* name);
 		inline Pair& operator[](const std::string& name);
 
+		inline Pair& operator()(const char* name, const char* def);
+		inline Pair& operator()(const std::string& name, const char* def);
+
 		inline Box& operator=(const Box& o);
+
+		template<typename T>
+		inline Pair& operator()(const char* name, const T& def);
+
+		template<typename T>
+		inline Pair& operator()(const std::string& name, const T& def);
 	};
 
 	//
@@ -262,6 +280,55 @@ namespace wss
 	Pair& Box::operator[](const std::string& name)
 	{
 		return (*this)[name.c_str()];
+	}
+
+	//
+
+	Pair& Box::operator()(const char* name, const char* def)
+	{
+		const std::size_t size = m_pairs.size();
+
+		for (std::size_t i = 0; i < size; ++i)
+		{
+			if (m_pairs[i].m_name == name) return m_pairs[i];
+		}
+
+		m_pairs.emplace_back(name, def);
+
+		return m_pairs.back();
+	}
+
+	//
+
+	Pair& Box::operator()(const std::string& name, const char* def)
+	{
+		return (*this)(name.c_str(), def);
+	}
+
+	//
+
+	template<typename T>
+	Pair& Box::operator()(const char* name, const T& def)
+	{
+		const std::size_t size = m_pairs.size();
+
+		for (std::size_t i = 0; i < size; ++i)
+		{
+			if (m_pairs[i].m_name == name) return m_pairs[i];
+		}
+
+		m_pairs.emplace_back(name);
+		m_pairs.back() = def;
+
+		return m_pairs.back();
+	}
+
+	//
+
+	template<typename T>
+	Pair& Box::operator()(const std::string& name, const T& def)
+	{
+		return (*this)(name.c_str(), def);
 	}
 
 	//
